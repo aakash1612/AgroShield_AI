@@ -1,8 +1,7 @@
-import { Routes, Route, useNavigate } from "react-router-dom";
+import { Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import { useEffect } from "react";
 import './App.css';
 import "react-toastify/dist/ReactToastify.css";
-
 import Login from "./components/Login.jsx";
 import Register from "./components/Register.jsx";
 import About from "./components/About.jsx";
@@ -14,13 +13,16 @@ import SoilEnquiry from "./components/SoilEnquiry.jsx";
 
 function App() {
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const token = localStorage.getItem("token");
-    if (!token) {
+
+    // Allow public access to login & register
+    if (!token && location.pathname !== "/login" && location.pathname !== "/register") {
       navigate("/login");
     }
-  }, [navigate]);
+  }, [navigate, location]);
 
   return (
     <>
@@ -33,7 +35,6 @@ function App() {
         <Route path="/weather" element={<Weather />} />
         <Route path="/vision" element={<Vision />} />
         <Route path="/soil-enquiry" element={<SoilEnquiry />} />
-
       </Routes>
     </>
   );

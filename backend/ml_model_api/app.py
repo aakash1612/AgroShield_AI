@@ -50,26 +50,19 @@ def predict(img_path):
         grain_weight = round(float(other_metrics[0]), 2)
         gsw = round(float(other_metrics[1]), 2)
         psii = round(float(other_metrics[2]), 2)
-        fertilizer = round(float(other_metrics[3]), 2)
-
-        # ---------- Fertilizer requirement logic (CORRECTED) ----------
-        if fertilizer < 0.5:
-            fertilizer_status = "Required"
-        elif 0.5 <= fertilizer <= 0.7:
-            fertilizer_status = "May be Required"
-        else:
-            fertilizer_status = "Not Required"
+        pesticide_val = round(float(other_metrics[3]), 2)
 
         # ---------- Crop Health Logic ----------
-        if (
-            fertilizer_status == "Required"
-            or grain_weight < 0.4
-            or gsw < 0
-            or psii < 0.3
-        ):
+        if (pesticide_val < 0.5 or grain_weight < 0.4 or gsw < 0 or psii < 0.3):
             crop_status = "Unhealthy / Diseased"
         else:
             crop_status = "Healthy"
+
+        # ---------- Pesticide Requirement ----------
+        if crop_status == "Healthy":
+            pesticide_status = "Not Required"
+        else:
+            pesticide_status = "Required"
 
         return {
             "predicted_class": predicted_class,
@@ -77,8 +70,9 @@ def predict(img_path):
             "grain_weight": grain_weight,
             "gsw": gsw,
             "psii": psii,
-            "fertilizer_status": fertilizer_status,
+            "pesticide_value": pesticide_val,
             "crop_status": crop_status,
+            "pesticide_status": pesticide_status,
         }
 
     except Exception as e:

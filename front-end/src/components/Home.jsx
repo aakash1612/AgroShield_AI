@@ -6,28 +6,32 @@ import bgVideo from "../assets/bg1.mp4";
 
 // React Icons
 import { FaTractor, FaCloudSunRain, FaSeedling } from "react-icons/fa";
-import { GiPlantRoots } from "react-icons/gi"; // Fixed icon import
+import { GiPlantRoots } from "react-icons/gi";
 
 function Home() {
   const navigate = useNavigate();
 
   return (
-    <div className="min-h-screen flex flex-col">
-      <Navbar />
+    <div className="relative min-h-screen flex flex-col overflow-hidden">
+      {/* Background Video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute top-0 left-0 w-full h-full object-cover -z-20"
+      >
+        <source src={bgVideo} type="video/mp4" />
+      </video>
+      <div className="absolute top-0 left-0 w-full h-full bg-black/40 -z-10"></div>
 
-      <main className="flex-grow">
+      {/* Navbar */}
+      <Navbar className="relative z-10" />
+
+      {/* Main Content */}
+      <main className="flex-grow relative z-10">
         {/* Hero Section */}
-        <div className="text-center py-8 px-4 relative">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            className="absolute top-0 left-0 w-full h-full object-cover -z-10"
-          >
-            <source src={bgVideo} type="video/mp4" />
-          </video>
-          <div className="absolute top-0 left-0 w-full h-full bg-black/40 -z-5"></div>
+        <div className="text-center py-32 px-4">
           <h1 className="text-2xl md:text-3xl font-light text-white italic max-w-3xl mx-auto">
             “Next to the Word of God, the noble art of{" "}
             <span className="text-orange-500 font-semibold">farming</span> is the
@@ -37,7 +41,7 @@ function Home() {
         </div>
 
         {/* Services Section */}
-        <div className="flex flex-wrap justify-center gap-6 py-10 bg-white">
+        <div className="flex flex-wrap justify-center gap-6 py-10">
           {/* Organic Farming */}
           <div className="w-64 p-6 bg-white rounded-xl shadow-md border text-center hover:shadow-lg transition">
             <div className="text-orange-500 text-4xl mb-2">
@@ -108,7 +112,7 @@ function Home() {
         </div>
       </main>
 
-      <Footer />
+      <Footer className="relative z-10" />
     </div>
   );
 }

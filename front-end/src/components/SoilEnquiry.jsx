@@ -38,7 +38,6 @@ function SoilEnquiry() {
     return result;
   };
 
-  // Fetch previous entries from backend
   const fetchPreviousEntries = async () => {
     try {
       const res = await axios.get(`${API_BASE_URL}/soil`, {
@@ -49,23 +48,18 @@ function SoilEnquiry() {
         setLatestReading(latest);
         setStates(calculateState(latest));
       }
-      setEntries(res.data.reverse()); // latest first
+      setEntries(res.data.reverse());
     } catch (err) {
       console.error("Error fetching soil entries:", err);
     }
   };
 
   useEffect(() => {
-    fetchPreviousEntries(); // initial fetch
-
-    const interval = setInterval(() => {
-      fetchPreviousEntries();
-    }, POLL_INTERVAL);
-
+    fetchPreviousEntries();
+    const interval = setInterval(fetchPreviousEntries, POLL_INTERVAL);
     return () => clearInterval(interval);
   }, []);
 
-  // Manual Analyze (optional)
   const analyzeReading = () => {
     const calculated = calculateState(latestReading);
     setStates(calculated);
@@ -81,12 +75,13 @@ function SoilEnquiry() {
     <div className="min-h-screen flex flex-col bg-green-50">
       <Navbar />
 
-      <main className="flex-grow container mx-auto px-6 py-6">
-        <h1 className="text-3xl font-bold text-green-700 mb-6 text-center">Soil Enquiry</h1>
+      <main className="flex-grow flex flex-col justify-center items-center pt-24 px-6">
+        {/* Form Section */}
+        <div className="bg-white shadow-lg rounded-2xl p-6 mb-6 max-w-lg w-full">
+          <h2 className="text-xl font-semibold mb-4 text-center text-green-700">
+            Enter Current Sensor Readings
+          </h2>
 
-        {/* Input form */}
-        <div className="bg-white shadow-lg rounded-2xl p-6 mb-8 max-w-lg mx-auto">
-          <h2 className="text-xl font-semibold mb-4 text-center">Enter Current Sensor Readings</h2>
           {["ph", "moisture", "N", "P", "K"].map((key) => (
             <div key={key} className="mb-4">
               <label className="block font-medium mb-1">{key.toUpperCase()}</label>
@@ -95,8 +90,8 @@ function SoilEnquiry() {
                 name={key}
                 value={latestReading[key] ?? ""}
                 onChange={handleChange}
-                className="w-full border rounded px-3 py-2"
                 placeholder={`Enter ${key.toUpperCase()} value or leave blank`}
+                className="w-full border rounded px-3 py-2 outline-none focus:ring-2 focus:ring-green-500 transition bg-white"
               />
             </div>
           ))}
@@ -110,11 +105,11 @@ function SoilEnquiry() {
         </div>
 
         {/* Display previous entries */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
           {entries.map((entry, index) => (
             <div
               key={entry._id}
-              className={`p-4 border rounded shadow-sm ${index === 0 ? "border-2 border-orange-500" : ""}`}
+              className={`p-4 border rounded shadow-sm bg-white`}
             >
               <h3 className="font-semibold mb-2 text-center">
                 {new Date(entry.createdAt).toLocaleString()}

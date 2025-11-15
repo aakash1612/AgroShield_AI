@@ -27,7 +27,7 @@ router.post(
 
       const imagePath = req.file.path;
 
-      const pythonProcess = spawn("python", [
+      const pythonProcess = spawn("py", [
         path.join(__dirname, "../ml_model_api/app.py"),
         imagePath,
       ]);

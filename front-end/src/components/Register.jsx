@@ -5,7 +5,7 @@ import axios from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import bgVideo from "../assets/bg2.mp4";
 
-const API_BASE_URL = "http://localhost:5000/api"; // ✅ Hardcoded
+const API_BASE_URL = "http://localhost:5000/api"; // Hardcoded API base URL
 
 function Register() {
   const [name, setName] = useState("");
@@ -13,8 +13,10 @@ function Register() {
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ name: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false); // ✅ Loading state
   const navigate = useNavigate();
 
+  // Form validation
   const validate = () => {
     let newErrors = { name: "", email: "", password: "" };
     let isValid = true;
@@ -45,38 +47,42 @@ function Register() {
     return isValid;
   };
 
+  // Handle register form submission
   const handleRegister = async (e) => {
     e.preventDefault();
 
-    if (validate()) {
-      try {
-        const res = await axios.post(`${API_BASE_URL}/auth/register`, {
-          name,
-          email,
-          password,
-        });
+    if (!validate()) {
+      return toast.error("❌ Kindly check the form fields");
+    }
 
-        if (res.data.success) {
-          toast.success("✅ Registered Successfully!");
-          localStorage.setItem("token", res.data.token);
-          if (res.data.user) {
-            localStorage.setItem("user", JSON.stringify(res.data.user));
-          }
-          setTimeout(() => navigate("/"), 1500);
-        } else {
-          toast.error(res.data.message || "❌ Registration failed");
-        }
-      } catch (error) {
-        console.error(error);
-        toast.error(error.response?.data?.message || "❌ Something went wrong");
-      }
-    } else {
-      toast.error("❌ Kindly check the form fields");
+    setLoading(true); // Start loading
+    try {
+      const res = await axios.post(`${API_BASE_URL}/auth/register`, {
+        name,
+        email,
+        password,
+      });
+
+      // Show success toast
+      toast.success(res.data.msg || "✅ Registered Successfully!");
+
+      // Save token + user info in localStorage
+      if (res.data.token) localStorage.setItem("token", res.data.token);
+      if (res.data.user) localStorage.setItem("user", JSON.stringify(res.data.user));
+
+      // Navigate to Home after 1 second
+      setTimeout(() => navigate("/"), 1000);
+    } catch (error) {
+      console.error(error);
+      toast.error(error.response?.data?.msg || "❌ Something went wrong");
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
-  
+
   return (
     <div className="relative h-screen w-full overflow-hidden">
+      {/* Background Video */}
       <video
         autoPlay
         loop
@@ -96,6 +102,7 @@ function Register() {
           </h2>
 
           <form onSubmit={handleRegister}>
+            {/* Name */}
             <div className="mb-4">
               <label className="block text-white font-medium mb-1">Name</label>
               <input
@@ -110,6 +117,7 @@ function Register() {
               )}
             </div>
 
+            {/* Email */}
             <div className="mb-4">
               <label className="block text-white font-medium mb-1">Email</label>
               <input
@@ -124,10 +132,9 @@ function Register() {
               )}
             </div>
 
+            {/* Password */}
             <div className="mb-4">
-              <label className="block text-white font-medium mb-1">
-                Password
-              </label>
+              <label className="block text-white font-medium mb-1">Password</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -149,11 +156,15 @@ function Register() {
               )}
             </div>
 
+            {/* Submit Button */}
             <button
               type="submit"
-              className="w-full py-2 bg-green-600 text-white font-semibold rounded-full hover:bg-green-700 transition"
+              disabled={loading}
+              className={`w-full py-2 text-white font-semibold rounded-full transition ${
+                loading ? "bg-gray-500 cursor-not-allowed" : "bg-green-600 hover:bg-green-700"
+              }`}
             >
-              Register
+              {loading ? "Registering..." : "Register"}
             </button>
           </form>
 

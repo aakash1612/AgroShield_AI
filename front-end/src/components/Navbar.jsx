@@ -1,10 +1,16 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa"; // profile icon
 
 function Navbar() {
   const location = useLocation();
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+
+  // dummy name for UI purpose (in real app this comes from backend/user data)
+  const userName = "Shivam"; 
+
+  const [isOpen, setIsOpen] = useState(false);
 
   const links = [
     { to: "/", label: "Home" },
@@ -42,15 +48,31 @@ function Navbar() {
         })}
       </div>
 
-      {/* Right - Auth Links */}
-      <div className="flex space-x-4">
+      {/* Right - Auth/Profile */}
+      <div className="flex items-center space-x-4">
         {token ? (
-          <button
-            onClick={handleLogout}
-            className="text-sm font-medium bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600 transition"
-          >
-            Logout
-          </button>
+          <div className="relative">
+            {/* Profile Button */}
+            <button
+              onClick={() => setIsOpen(!isOpen)}
+              className="flex items-center space-x-2 bg-gray-800 px-3 py-1 rounded-md hover:bg-gray-700 transition"
+            >
+              <FaUserCircle className="text-xl" />
+              <span className="text-sm font-medium">{userName}</span>
+            </button>
+
+            {/* Dropdown */}
+            {isOpen && (
+              <div className="absolute right-0 mt-2 w-32 bg-white text-black rounded-lg shadow-lg">
+                <button
+                  onClick={handleLogout}
+                  className="w-full text-left px-4 py-2 hover:bg-gray-100 rounded-t-lg"
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
         ) : (
           <>
             <Link
