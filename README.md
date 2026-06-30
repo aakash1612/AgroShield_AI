@@ -9,7 +9,7 @@ AgroShield AI is an end-to-end, full-stack Intelligent Agriculture platform desi
 
 Watch the complete walkthrough of how the hardware integration, mobile/cloud app interface, and web dashboard synchronize in real-time:
 
-👉 **[Watch the AgroShield AI Full Project Video on YouTube](YOUR_YOUTUBE_VIDEO_LINK_HERE)**
+👉 **[Watch the AgroShield AI Full Project Video on YouTube](https://youtu.be/qkiMok3EBoU)**
 
 > 💡 *Inside the video: See the live physical sensor calibration, data broadcasting from the microcontroller app interface, and the step-by-step leaf disease analysis engine.*
 
